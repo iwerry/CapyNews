@@ -5,7 +5,7 @@ export default function NewsHero() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <div style={{ width: '100%', aspectRatio: '2/1', backgroundColor: '#eee', overflow: 'hidden' }}>
                 <img
-                    src="https://images.unsplash.com/photo-1579325594624-8a1c9110d754?q=80&w=1600&auto=format&fit=crop"
+                    src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=1600&auto=format&fit=crop"
                     alt="Hero"
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />

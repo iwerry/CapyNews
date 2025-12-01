@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const categories = [
     'Latest', 'World', 'Business', 'Tourism', 'Culture', 'Health', 'Science', 'Green', 'Lifestyle', 'Weather'
@@ -15,9 +16,14 @@ export default function NavBar() {
                 padding: '0.8rem 0',
                 scrollbarWidth: 'none'
             }}>
-                {categories.map(cat => (
-                    <a key={cat} href="#" style={{ fontSize: '1rem', fontWeight: 'bold', textTransform: 'capitalize' }}>{cat}</a>
-                ))}
+                {categories.map(cat => {
+                    const path = cat === 'Latest' ? '/' : `/${cat.toLowerCase()}`;
+                    return (
+                        <Link key={cat} to={path} style={{ fontSize: '1rem', fontWeight: 'bold', textTransform: 'capitalize', color: 'inherit', textDecoration: 'none' }}>
+                            {cat}
+                        </Link>
+                    );
+                })}
             </div>
         </nav>
     );
