@@ -1,6 +1,6 @@
-import React from 'react';
-import { CategorySlug } from '../types/news';
-import { getLatestArticles, getArticlesByCategory } from '../data/news';
+import React, { useState, useEffect } from 'react';
+import { CategorySlug, NewsArticle } from '../types/news';
+import { fetchLatestArticles, fetchArticlesByCategory } from '../services/newsApi';
 import NewsHero from './NewsHero';
 import NewsSidebar from './NewsSidebar';
 
@@ -10,7 +10,51 @@ interface NewsSectionProps {
 }
 
 export default function NewsSection({ title, category }: NewsSectionProps) {
-    const articles = category ? getArticlesByCategory(category) : getLatestArticles();
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [articles, setArticles] = useState<NewsArticle[]>([]);
+
+    useEffect(() => {
+        async function loadArticles() {
+            setLoading(true);
+            setError(null);
+
+            try {
+                const data = category
+                    ? await fetchArticlesByCategory(category)
+                    : await fetchLatestArticles();
+
+                setArticles(data);
+            } catch (err) {
+                setError(err instanceof Error ? err.message : 'Failed to load articles');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        loadArticles();
+    }, [category]);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '2rem 0', textAlign: 'center' }}>
+                <h1 style={{ fontSize: '3.5rem', fontWeight: '900', letterSpacing: '-2px', lineHeight: 1 }}>{title}</h1>
+                <p style={{ fontSize: '1.2rem', color: '#666', marginTop: '1rem' }}>Loading...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ padding: '2rem 0', textAlign: 'center' }}>
+                <h1 style={{ fontSize: '3.5rem', fontWeight: '900', letterSpacing: '-2px', lineHeight: 1 }}>{title}</h1>
+                <p style={{ fontSize: '1.2rem', color: '#d32f2f', marginTop: '1rem' }}>{error}</p>
+                <p style={{ fontSize: '1rem', color: '#666', marginTop: '0.5rem' }}>
+                    Make sure the API server is running on http://localhost:4000
+                </p>
+            </div>
+        );
+    }
 
     if (articles.length === 0) {
         return (
@@ -22,7 +66,7 @@ export default function NewsSection({ title, category }: NewsSectionProps) {
     }
 
     const heroArticle = articles[0];
-    const sidebarArticles = articles.slice(1, 4); // Take next 3 articles
+    const sidebarArticles = articles.slice(1, 4);
 
     return (
         <>

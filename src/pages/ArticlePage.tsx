@@ -1,22 +1,52 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useParams, Link, Navigate } from 'react-router-dom'
-import { getArticleBySlug } from '../data/news'
+import { fetchArticleBySlug } from '../services/newsApi'
+import { NewsArticle } from '../types/news'
 
 export default function ArticlePage() {
     const { slug } = useParams<{ slug: string }>();
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [article, setArticle] = useState<NewsArticle | null>(null);
+
+    useEffect(() => {
+        async function loadArticle() {
+            if (!slug) return;
+
+            setLoading(true);
+            setError(null);
+
+            try {
+                const data = await fetchArticleBySlug(slug);
+                setArticle(data);
+            } catch (err) {
+                setError(err instanceof Error ? err.message : 'Failed to load article');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        loadArticle();
+    }, [slug]);
 
     if (!slug) {
         return <Navigate to="/" replace />;
     }
 
-    const article = getArticleBySlug(slug);
+    if (loading) {
+        return (
+            <div style={{ padding: '2rem 0', textAlign: 'center' }}>
+                <h1 style={{ fontSize: '3rem', fontWeight: 'bold' }}>Loading article...</h1>
+            </div>
+        );
+    }
 
-    if (!article) {
+    if (error || !article) {
         return (
             <div style={{ padding: '2rem 0', textAlign: 'center' }}>
                 <h1 style={{ fontSize: '3rem', fontWeight: 'bold' }}>Article not found</h1>
                 <p style={{ fontSize: '1.2rem', color: '#666', marginTop: '1rem' }}>
-                    The article you're looking for doesn't exist.
+                    {error || "The article you're looking for doesn't exist."}
                 </p>
                 <Link to="/" style={{ color: '#2196f3', fontSize: '1.1rem', marginTop: '1rem', display: 'inline-block' }}>
                     ← Back to Home
