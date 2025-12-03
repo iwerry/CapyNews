@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CategorySlug, NewsArticle } from '../types/news';
 import { fetchLatestArticles, fetchArticlesByCategory } from '../services/newsApi';
+import { API_BASE_URL } from '../services/apiClient';
 import NewsHero from './NewsHero';
 import NewsSidebar from './NewsSidebar';
 
@@ -50,7 +51,7 @@ export default function NewsSection({ title, category }: NewsSectionProps) {
                 <h1 style={{ fontSize: '3.5rem', fontWeight: '900', letterSpacing: '-2px', lineHeight: 1 }}>{title}</h1>
                 <p style={{ fontSize: '1.2rem', color: '#d32f2f', marginTop: '1rem' }}>{error}</p>
                 <p style={{ fontSize: '1rem', color: '#666', marginTop: '0.5rem' }}>
-                    Make sure the API server is running on http://localhost:4000
+                    Check if the API is available at: {API_BASE_URL}
                 </p>
             </div>
         );
