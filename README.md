@@ -1,24 +1,23 @@
-# CapyNews (Frontend)
+# CapyNews - Frontend
 
-Site público do jornal CapyNews, desenvolvido em React + TypeScript + Vite.
-Este é apenas o **frontend** - ele consome uma API externa para exibir as notícias.
+Site público do jornal CapyNews. Este repositório contém **apenas o frontend** - uma aplicação React que consome uma API externa.
 
-## 🏗️ Arquitetura
+## 📋 Sobre o Projeto
 
-- **Frontend**: Este repositório (SPA estática)
-- **Backend + Admin**: Repositório separado (API + Painel Administrativo)
-- **Comunicação**: Via API REST usando `VITE_API_URL`
+- **Frontend**: Este repositório (React + TypeScript + Vite)
+- **Backend + Admin**: Repositório separado (API Node.js + Painel Admin)
+- **Produção**: https://capynews2025.vercel.app
 
 ## 🚀 Desenvolvimento Local
 
 ### Pré-requisitos
 
-1. Node.js instalado
-2. API do CapyNews rodando (em outro projeto/terminal)
+- Node.js 18+ instalado
+- API do CapyNews rodando (em outro projeto)
 
-### Setup
+### Configuração
 
-1. **Clone e instale dependências**:
+1. **Clone e instale**:
    ```bash
    git clone https://github.com/iwerry/CapyNews.git
    cd CapyNews
@@ -29,109 +28,132 @@ Este é apenas o **frontend** - ele consome uma API externa para exibir as notí
    ```bash
    # Copie o arquivo de exemplo
    cp .env.example .env.local
+   ```
    
-   # Edite .env.local e configure a URL da API:
-   # VITE_API_URL=http://localhost:4000/api
+   Edite `.env.local` e configure:
+   ```env
+   VITE_API_URL=http://localhost:4000/api
    ```
 
-3. **Inicie o servidor de desenvolvimento**:
+3. **Inicie o servidor**:
    ```bash
    npm run dev
    ```
    
-   Acesse `http://localhost:5173`
+   Acesse http://localhost:5173
 
-### Scripts Disponíveis
+### Scripts
 
-- `npm run dev` - Inicia servidor de desenvolvimento
-- `npm run build` - Gera build de produção em `dist/`
-- `npm run preview` - Visualiza o build localmente
+- `npm run dev` - Servidor de desenvolvimento
+- `npm run build` - Build de produção
+- `npm run preview` - Preview do build
 
 ## ☁️ Deploy na Vercel
 
-### Configuração do Projeto (capynews2025)
+### Configuração do Projeto
 
 No painel da Vercel, configure:
 
-- **Root Directory**: `/`
-- **Framework Preset**: Vite
-- **Build Command**: `npm run build`
-- **Output Directory**: `dist`
+| Configuração | Valor |
+|--------------|-------|
+| **Root Directory** | `/` (raiz do repositório) |
+| **Framework Preset** | Vite |
+| **Build Command** | `npm run build` |
+| **Output Directory** | `dist` |
 
 ### Variáveis de Ambiente
 
-Configure a seguinte variável no painel da Vercel:
+**OBRIGATÓRIO**: Configure a variável de ambiente no painel da Vercel:
 
-| Variável | Valor | Descrição |
-|----------|-------|-----------|
-| `VITE_API_URL` | `https://sua-api.exemplo.com/api` | URL pública da API em produção |
+```
+VITE_API_URL=https://sua-api-em-producao.com/api
+```
 
-**⚠️ Importante**: Sem esta variável configurada, o site tentará usar `http://localhost:4000/api` e não funcionará em produção.
+**⚠️ IMPORTANTE**: 
+- Sem esta variável, o site tentará usar `http://localhost:4000/api` e falhará em produção
+- A URL deve apontar para a API pública (será definida quando o backend estiver no ar)
+- Não invente URLs - use apenas a URL real da API quando ela estiver disponível
 
 ### Passos para Deploy
 
 1. Conecte o repositório GitHub à Vercel
-2. Configure as variáveis de ambiente
-3. Deploy automático a cada push na branch `main`
+2. Configure a variável `VITE_API_URL` (quando a API estiver disponível)
+3. Deploy automático a cada push
 
-## 🔧 Tecnologias
+## 🔧 Estrutura do Projeto
 
-- **React 18** - Biblioteca UI
-- **TypeScript** - Tipagem estática
-- **Vite** - Build tool e dev server
-- **React Router** - Navegação SPA
-- **Lucide React** - Ícones
+```
+CapyNews/
+├── src/
+│   ├── components/      # Componentes React (Header, NewsSection, etc)
+│   ├── pages/           # Páginas (Home, ArticlePage, Section)
+│   ├── services/        # API client e integrações
+│   │   ├── apiClient.ts # Cliente HTTP centralizado
+│   │   └── newsApi.ts   # Funções de busca de notícias
+│   ├── types/           # Tipos TypeScript
+│   └── styles/          # Estilos globais
+├── public/              # Assets estáticos
+├── .env.example         # Exemplo de variáveis de ambiente
+├── package.json         # Dependências e scripts
+└── vite.config.ts       # Configuração do Vite
+```
 
-## 📡 API
+## 📡 Integração com API
 
 O frontend consome os seguintes endpoints:
 
 - `GET /articles` - Lista todos os artigos
 - `GET /articles?category={slug}` - Filtra por categoria
-- `GET /articles/{slug}` - Busca artigo individual
+- `GET /articles/{slug}` - Busca artigo por slug
 - `GET /categories` - Lista categorias
 
-Todas as chamadas são centralizadas em `src/services/apiClient.ts`.
-
-## 📁 Estrutura do Projeto
-
-```
-CapyNews/
-├── src/
-│   ├── components/     # Componentes React
-│   ├── pages/          # Páginas/rotas
-│   ├── services/       # Cliente HTTP e API
-│   ├── types/          # Tipos TypeScript
-│   └── styles/         # Estilos globais
-├── public/             # Assets estáticos
-├── .env.example        # Exemplo de variáveis de ambiente
-└── package.json
-```
+**Centralização**: Todas as chamadas HTTP passam por `src/services/apiClient.ts`, que:
+- Lê `VITE_API_URL` do ambiente
+- Usa fallback `http://localhost:4000/api` apenas em desenvolvimento
+- Trata erros de conexão de forma amigável
 
 ## 🐛 Troubleshooting
 
-### "Failed to load articles"
+### "Não foi possível carregar as notícias"
 
-Se você ver esta mensagem:
-1. Verifique se a API está rodando
-2. Confirme que `VITE_API_URL` está configurado corretamente
-3. A mensagem de erro mostrará a URL que está sendo usada
+**Causa**: A API não está acessível
+
+**Soluções**:
+1. **Em desenvolvimento**: Verifique se a API está rodando em `http://localhost:4000`
+2. **Em produção**: 
+   - Confirme que `VITE_API_URL` está configurada na Vercel
+   - Verifique se a URL da API está correta e acessível
+   - Veja os logs do console do navegador (F12) para mais detalhes
 
 ### Build falha na Vercel
 
-1. Verifique se `VITE_API_URL` está configurada nas variáveis de ambiente
-2. Confirme que a URL da API é acessível publicamente
-3. Revise os logs de build no painel da Vercel
+1. Verifique se todos os comandos funcionam localmente:
+   ```bash
+   npm install
+   npm run build
+   ```
+2. Revise os logs de build no painel da Vercel
+3. Confirme que não há erros de TypeScript
 
-## 📝 Notas
+## 🛠️ Tecnologias
 
-- Este projeto **não** contém backend ou painel administrativo
-- O código não possui dados mockados - tudo vem da API
-- A URL da API é configurável via variável de ambiente
-- Em desenvolvimento, use `.env.local` (não commitado)
-- Em produção, configure no painel da Vercel
+- **React 18** - Biblioteca UI
+- **TypeScript** - Tipagem estática
+- **Vite** - Build tool rápido
+- **React Router** - Navegação SPA
+- **Lucide React** - Ícones
+
+## 📝 Notas Importantes
+
+- ✅ Este projeto **não contém** backend ou painel admin
+- ✅ Não há dados mockados - tudo vem da API
+- ✅ A URL da API é **sempre** configurável via `VITE_API_URL`
+- ✅ Nunca use URLs inventadas ou hardcoded
+- ✅ Em desenvolvimento, use `.env.local` (não commitado)
+- ✅ Em produção, configure no painel da Vercel
 
 ## 🔗 Links
 
-- **Produção**: https://capynews2025.vercel.app/
+- **Produção**: https://capynews2025.vercel.app
 - **Repositório**: https://github.com/iwerry/CapyNews
+- **Backend**: (Repositório separado - será linkado quando disponível)
