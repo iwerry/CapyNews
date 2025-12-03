@@ -1,64 +1,49 @@
-# CapyNews
+# CapyNews (Frontend)
 
-Site de notícias CapyNews com frontend React + TypeScript + Vite e backend Node.js + Express + Prisma.
+Este repositório contém apenas o **frontend público** do CapyNews, desenvolvido em React + TypeScript + Vite.
+Ele consome uma API externa para exibir as notícias.
 
-## Estrutura do Projeto
+## Estrutura
 
-- `/` - Frontend (React + TypeScript + Vite)
-- `/server` - Backend API (Node.js + Express + Prisma + SQLite)
+O projeto é uma SPA (Single Page Application) estática.
+- Não possui backend embutido.
+- Não possui painel administrativo (estes ficam em outro repositório).
 
-## Como rodar localmente (com API)
+## Como rodar localmente
 
-### 1. Iniciar o Backend
+Para rodar este frontend, você precisará de uma API rodando (seja localmente em outro terminal ou em um servidor remoto).
 
-Em um terminal:
+1. **Instale as dependências**:
+   ```bash
+   npm install
+   ```
 
-```bash
-cd server
-npm install
-npm run prisma:generate
-npm run prisma:migrate
-npm run prisma:seed
-npm run dev
-```
+2. **Configure a API**:
+   Crie um arquivo `.env.local` na raiz com a URL da API:
+   ```env
+   VITE_API_URL="http://localhost:4000/api"
+   ```
+   *(Se você não tiver o backend rodando, o site abrirá mas não carregará notícias).*
 
-A API estará disponível em `http://localhost:4000`
+3. **Inicie o servidor de desenvolvimento**:
+   ```bash
+   npm run dev
+   ```
+   Acesse `http://localhost:5173`.
 
-### 2. Iniciar o Frontend
+## Configuração na Vercel
 
-Em outro terminal (na raiz do projeto):
+Este projeto está pronto para deploy na Vercel como uma aplicação estática.
 
-```bash
-npm install
-npm run dev
-```
+- **Root Directory**: `/`
+- **Framework Preset**: Vite
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist`
+- **Environment Variables**:
+  - `VITE_API_URL`: URL da API de produção (ex: `https://api.capynews.com/api`)
 
-O site estará disponível em `http://localhost:5173`
+## Scripts
 
-### Configuração da API
-
-O frontend usa a variável de ambiente `VITE_API_URL` para se conectar à API. 
-
-Crie um arquivo `.env.local` na raiz com:
-
-```env
-VITE_API_URL=http://localhost:4000/api
-```
-
-Se não configurado, o padrão é `http://localhost:4000/api`.
-
-## Como fazer build e preview
-
-```bash
-npm run build
-npm run preview
-```
-
-## Como configurar na Vercel
-
-* Root Directory: `/`
-* Framework preset: Vite
-* Build Command: `npm run build`
-* Output Directory: `dist`
-
-**Nota**: Para produção, você precisará configurar a variável de ambiente `VITE_API_URL` apontando para a URL da API em produção.
+- `npm run dev`: Inicia servidor local.
+- `npm run build`: Gera build de produção em `dist/`.
+- `npm run preview`: Visualiza o build gerado.
